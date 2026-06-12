@@ -1,3 +1,4 @@
+package modelo;
 import utilidades.*;
 
 public class Pasajero extends Persona {
