@@ -1,3 +1,4 @@
+//Marisol Yañez Borquez
 package modelo;
 public class Pago {
     private int monto;

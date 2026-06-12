@@ -1,3 +1,4 @@
+//Marisol Yañez Borquez
 package utilidades;
 public class Nombre {
     private Tratamiento tratamiento;
