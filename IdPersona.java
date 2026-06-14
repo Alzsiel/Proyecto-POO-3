@@ -1,4 +1,4 @@
-//Marisol Yañez Borquez
+//Juan Jose Henriquez Vergara
 package utilidades;
 
 public interface IdPersona {
