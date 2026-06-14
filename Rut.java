@@ -1,4 +1,4 @@
-//Tomás Meza
+//Juan Jose Henriquez Vergara
 
 package utilidades;
 
