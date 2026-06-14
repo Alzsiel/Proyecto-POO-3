@@ -1,4 +1,5 @@
-//Camila Valeska Márquez Burgos
+//Juan Jose Henriquez Vergara
+
 package modelo;
 import java.util.ArrayList;
 import utilidades.*;
