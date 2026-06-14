@@ -1,5 +1,6 @@
+//Juan Jose Henriquez Vergara
+
 package controlador;
-//Camila Valeska Márquez Burgos
 
 import excepciones.SistemaVentaPasajesException;
 import java.time.LocalDate;
