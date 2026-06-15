@@ -4,7 +4,7 @@ package modelo;
 
 import utilidades.*;
 
-public class Persona {
+public class Persona implements Serializable{
 
     private IdPersona idPersona;
     private Nombre nombreCompleto;
