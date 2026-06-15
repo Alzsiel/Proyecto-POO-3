@@ -2,7 +2,7 @@
 
 package utilidades;
 
-public class Rut implements IdPersona {
+public class Rut implements IdPersona, Serializable {
     private int numero;
     private char dv;
 
