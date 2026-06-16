@@ -1,6 +1,7 @@
 //Marisol Yañez Borquez
 package modelo;
-public class Pago {
+import java.io.Serializable;
+public class Pago implements Serializable{
     private int monto;
 
     public Pago(int monto) {

@@ -2,7 +2,8 @@
 package modelo;
 import java.util.ArrayList;
 import utilidades.*;
-public class Auxiliar extends Tripulante {
+import java.io.Serializable;
+public class Auxiliar extends Tripulante implements Serializable{
     private ArrayList<Viaje> viajes;
 
     public Auxiliar(IdPersona idPersona, Nombre nombre, Direccion direccion) {

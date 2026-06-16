@@ -3,12 +3,11 @@ package persistencia;
 import java.io.*;
 import java.util.List;
 import java.util.Optional;
-
 import modelo.*;
 import utilidades.IdPersona;
 import utilidades.Rut;
-
-public class IOSVP {
+import java.io.Serializable;
+public class IOSVP implements Serializable{
 
     private static IOSVP instancia;
 
