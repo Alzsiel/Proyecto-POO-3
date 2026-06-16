@@ -1,3 +1,5 @@
+//Tomás Meza
+
 package modelo;
 
 public class PagoEfectivo extends Pago {
