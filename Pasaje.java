@@ -1,6 +1,8 @@
 package modelo;
 
-public class Pasaje {
+import java.io.Serializable;
+
+public class Pasaje implements Serializable {
     private long numero;
     private int asiento;
     private Viaje viaje;
