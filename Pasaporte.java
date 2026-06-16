@@ -1,5 +1,3 @@
-//Tomás Meza
-
 package utilidades;
 
 public class Pasaporte implements IdPersona {

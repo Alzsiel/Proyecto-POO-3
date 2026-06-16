@@ -1,5 +1,3 @@
-//Tomás Meza
-
 package modelo;
 
 import java.time.LocalDate;

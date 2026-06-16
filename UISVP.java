@@ -1,8 +1,7 @@
-//Tomás Meza
 package vista;
 
 import controlador.*;
-import excepciones.SistemaVentaPasajesException;
+import excepciones.SVPException;
 import modelo.*;
 import utilidades.*;
 
@@ -79,7 +78,7 @@ public class UISVP {
                     case 15: System.out.println("Saliendo..."); break;
                     default: System.out.println("ERROR! La opcion ingresada no es valida");
                 }
-            } catch (SistemaVentaPasajesException e) {
+            } catch (SVPException e) {
                 System.out.println("*** " + e.getMessage() + " ***");
             } catch (Exception e) {
                 System.out.println("*** Dato ingresado no valido ***");
@@ -224,7 +223,7 @@ public class UISVP {
 
             try {
                 sistema.vendePasaje(idDoc, tipo, fechaViaje, hora, patente, asiento, idPasajero);
-            } catch (SistemaVentaPasajesException e) {
+            } catch (SVPException e) {
                 if (!e.getMessage().contains("pasajero")) {
                     throw e;
                 }
