@@ -3,6 +3,7 @@
 package modelo;
 
 import java.util.ArrayList;
+import java.io.Serializable;
 
 public class Bus implements Serializable{
     private String patente;

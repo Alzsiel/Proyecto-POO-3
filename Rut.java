@@ -2,6 +2,8 @@
 
 package utilidades;
 
+import java.io.Serializable;
+
 public class Rut implements IdPersona, Serializable {
     private int numero;
     private char dv;

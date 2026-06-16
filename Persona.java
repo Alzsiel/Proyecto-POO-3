@@ -3,6 +3,7 @@
 package modelo;
 
 import utilidades.*;
+import java.io.Serializable;
 
 public class Persona implements Serializable{
 

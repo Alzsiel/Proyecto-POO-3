@@ -2,7 +2,7 @@
 
 package controlador;
 
-import excepciones.SistemaVentaPasajesException;
+import excepciones.SVPException;
 import modelo.*;
 import utilidades.*;
 
@@ -56,7 +56,7 @@ public class ControladorEmpresas implements Serializable {
 
     public void createEmpresa(Rut rut, String nombre, String url) {
         if (findEmpresa(rut).isPresent()) {
-            throw new SistemaVentaPasajesException("Ya existe empresa con el rut indicado");
+            throw new SVPException("Ya existe empresa con el rut indicado");
         }
 
         Empresa emp = new Empresa(rut, nombre);
@@ -67,10 +67,10 @@ public class ControladorEmpresas implements Serializable {
     public void createBus(String patente, String marca, String modelo, int nroAsientos, Rut rutEmp) {
         Optional<Empresa> emp = findEmpresa(rutEmp);
         if (emp.isEmpty()) {
-            throw new SistemaVentaPasajesException("No existe empresa con el rut indicado");
+            throw new SVPException("No existe empresa con el rut indicado");
         }
         if (findBus(patente).isPresent()) {
-            throw new SistemaVentaPasajesException("Ya existe bus con la patente indicada");
+            throw new SVPException("Ya existe bus con la patente indicada");
         }
 
         Bus bus = new Bus(patente, nroAsientos);
@@ -82,10 +82,10 @@ public class ControladorEmpresas implements Serializable {
 
     public void createTerminal(String nombre, Direccion direccion) {
         if (findTerminal(nombre).isPresent()) {
-            throw new SistemaVentaPasajesException("Ya existe terminal con el nombre indicado");
+            throw new SVPException("Ya existe terminal con el nombre indicado");
         }
         if (findTerminalPorComuna(direccion.getComuna()).isPresent()) {
-            throw new SistemaVentaPasajesException("Ya existe terminal en la comuna indicada");
+            throw new SVPException("Ya existe terminal en la comuna indicada");
         }
 
         terminales.add(new Terminal(nombre, direccion));
@@ -94,20 +94,20 @@ public class ControladorEmpresas implements Serializable {
     public void hireConductorForEmpresa(Rut rutEmp, IdPersona id, Nombre nom, Direccion dir) {
         Optional<Empresa> emp = findEmpresa(rutEmp);
         if (emp.isEmpty()) {
-            throw new SistemaVentaPasajesException("No existe empresa con el rut indicado");
+            throw new SVPException("No existe empresa con el rut indicado");
         }
         if (!emp.get().addConductor(id, nom, dir)) {
-            throw new SistemaVentaPasajesException("Ya esta contratado un tripulante con el id indicado");
+            throw new SVPException("Ya esta contratado un tripulante con el id indicado");
         }
     }
 
     public void hireAuxiliarForEmpresa(Rut rutEmp, IdPersona id, Nombre nom, Direccion dir) {
         Optional<Empresa> emp = findEmpresa(rutEmp);
         if (emp.isEmpty()) {
-            throw new SistemaVentaPasajesException("No existe empresa con el rut indicado");
+            throw new SVPException("No existe empresa con el rut indicado");
         }
         if (!emp.get().addAuxiliar(id, nom, dir)) {
-            throw new SistemaVentaPasajesException("Ya esta contratado un tripulante con el id indicado");
+            throw new SVPException("Ya esta contratado un tripulante con el id indicado");
         }
     }
 
@@ -128,7 +128,7 @@ public class ControladorEmpresas implements Serializable {
     public String[][] listLlegadasSalidasTerminal(String nombre, LocalDate fecha) {
         Optional<Terminal> terminal = findTerminal(nombre);
         if (terminal.isEmpty()) {
-            throw new SistemaVentaPasajesException("No existe terminal con el nombre indicado");
+            throw new SVPException("No existe terminal con el nombre indicado");
         }
 
         ArrayList<String[]> filas = new ArrayList<String[]>();
@@ -148,7 +148,7 @@ public class ControladorEmpresas implements Serializable {
     public String[][] listVentasEmpresa(Rut rut) {
         Optional<Empresa> emp = findEmpresa(rut);
         if (emp.isEmpty()) {
-            throw new SistemaVentaPasajesException("No existe empresa con el rut indicado");
+            throw new SVPException("No existe empresa con el rut indicado");
         }
 
         Venta[] ventas = emp.get().getVentas();

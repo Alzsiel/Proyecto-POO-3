@@ -1,12 +1,14 @@
 //Juan Jose Henriquez Vergara
 
 package modelo;
+
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.ArrayList;
+import java.io.Serializable;
 
-public class Viaje {
+public class Viaje implements Serializable{
     private LocalDate fecha;
     private LocalTime hora;
     private int precio;

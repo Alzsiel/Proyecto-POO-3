@@ -1,4 +1,5 @@
 //Juan Jose Henriquez Vergara
+
 package utilidades;
 
 public interface IdPersona {
