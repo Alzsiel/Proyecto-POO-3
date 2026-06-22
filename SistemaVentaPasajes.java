@@ -3,6 +3,8 @@
 package controlador;
 
 import excepciones.SVPException;
+
+import java.io.Serializable;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.ArrayList;
@@ -10,10 +12,10 @@ import java.util.Optional;
 import modelo.*;
 import utilidades.*;
 
-public class SistemaVentaPasajes {
+public class SistemaVentaPasajes implements Serializable {
     private static SistemaVentaPasajes instancia;
 
-    private ArrayList<Cliente> clientes;
+    private final ArrayList<Cliente> clientes;
     private ArrayList<Pasajero> pasajeros;
     private ArrayList<Viaje> viajes;
     private ArrayList<Venta> ventas;
@@ -30,6 +32,12 @@ public class SistemaVentaPasajes {
             instancia = new SistemaVentaPasajes();
         }
         return instancia;
+    }
+
+    public static void setInstancia(
+            SistemaVentaPasajes nuevaInstancia) {
+
+        instancia = nuevaInstancia;
     }
 
     public void createCliente(IdPersona id, Nombre nom, String fono, String email) {
@@ -53,8 +61,8 @@ public class SistemaVentaPasajes {
         pasajeros.add(pasajero);
     }
 
-    public void createViaje(LocalDate fecha, LocalTime hora, int precio, int duracion, String patBus,
-                            IdPersona[] idTripulantes, String[] nomComunas) {
+    public void createViaje(LocalDate fecha, LocalTime hora, int precio, int duracion, String patBus, IdPersona[] idTripulantes, String[] nomComunas) {
+
         ControladorEmpresas contEmp = ControladorEmpresas.getInstancia();
         Optional<Bus> bus = contEmp.findBus(patBus);
         if (bus.isEmpty()) {
@@ -120,15 +128,12 @@ public class SistemaVentaPasajes {
     }
 
     public String[][] getHorariosDisponibles(LocalDate fechaViaje, String comunaSalida, String comunaLlegada, int nroPasajes) {
-        ArrayList<Viaje> lista = new ArrayList<Viaje>();
-        for (Viaje viaje : viajes) {
-            boolean mismaFecha = viaje.getFecha().equals(fechaViaje);
-            boolean mismaSalida = viaje.getTerminalSalida().getDireccion().getComuna().equalsIgnoreCase(comunaSalida);
-            boolean mismaLlegada = viaje.getTerminalLlegada().getDireccion().getComuna().equalsIgnoreCase(comunaLlegada);
-            if (mismaFecha && mismaSalida && mismaLlegada && viaje.existeDisponibilidad(nroPasajes)) {
-                lista.add(viaje);
-            }
-        }
+        ArrayList<Viaje> lista = viajes.stream()
+                .filter(viaje -> viaje.getFecha().equals(fechaViaje)
+                        && viaje.getTerminalSalida().getDireccion().getComuna().equalsIgnoreCase(comunaSalida)
+                        && viaje.getTerminalLlegada().getDireccion().getComuna().equalsIgnoreCase(comunaLlegada)
+                        && viaje.existeDisponibilidad(nroPasajes))
+                .collect(java.util.stream.Collectors.toCollection(ArrayList::new));
 
         String[][] resultado = new String[lista.size()][4];
         for (int i = 0; i < lista.size(); i++) {
@@ -247,41 +252,63 @@ public class SistemaVentaPasajes {
         return resultado;
     }
 
-    private Optional<Cliente> findCliente(IdPersona id) {
-        for (Cliente cliente : clientes) {
-            if (cliente.getIdPersona().equals(id)) {
-                return Optional.of(cliente);
-            }
+    public void generatePasajesVenta (String idDocumento, TipoDocumento tipo) throws SVPException {
+        Optional<Venta> venta = findVenta(idDocumento, tipo);
+        if (venta.isEmpty()) {
+            throw new SVPException("No existe venta con el id y tipo de documento indicados");
         }
-        return Optional.empty();
+        venta.get().generarPasajeElectronico();
+    }
+
+
+    private Optional<Cliente> findCliente(IdPersona id) {
+        return clientes.stream().filter(cliente -> cliente.getIdPersona().equals(id)).findFirst();
     }
 
     private Optional<Venta> findVenta(String idDocumento, TipoDocumento tipoDocumento) {
-        for (Venta venta : ventas) {
-            if (venta.getIdDocumento().equals(idDocumento) && venta.getTipo() == tipoDocumento) {
-                return Optional.of(venta);
-            }
-        }
-        return Optional.empty();
+        return ventas.stream().filter(venta -> venta.getIdDocumento().equals(idDocumento) &&
+                venta.getTipo() == tipoDocumento).findFirst();
+
     }
 
     private Optional<Viaje> findViaje(LocalDate fecha, LocalTime hora, String patenteBus) {
-        for (Viaje viaje : viajes) {
-            if (viaje.getFecha().equals(fecha)
-                    && viaje.getHora().equals(hora)
-                    && viaje.getBus().getPatente().equalsIgnoreCase(patenteBus)) {
-                return Optional.of(viaje);
-            }
-        }
-        return Optional.empty();
+        return viajes.stream()
+                .filter(viaje -> viaje.getFecha().equals(fecha)
+                        && viaje.getHora().equals(hora)
+                        && viaje.getBus().getPatente().equalsIgnoreCase(patenteBus))
+                .findFirst();
     }
 
     private Optional<Pasajero> findPasajero(IdPersona idPersona) {
-        for (Pasajero pasajero : pasajeros) {
-            if (pasajero.getIdPersona().equals(idPersona)) {
-                return Optional.of(pasajero);
-            }
+        return pasajeros.stream()
+                .filter(pasajero -> pasajero.getIdPersona().equals(idPersona))
+                .findFirst();
+    }
+
+    public void readDatosIniciales() throws SVPException {
+        persistencia.IOSVP.getInstancia().readDatosIniciales();
+    }
+
+    public void saveDatosSistema() throws SVPException {
+        Object[] controladores = {this, ControladorEmpresas.getInstancia()};
+        System.out.println("...::::Guardando Datos::::....");
+        System.out.println("Empresas: " + ControladorEmpresas.getInstancia().listEmpresas().length);
+        persistencia.IOSVP.getInstancia().saveControladores(controladores);
+
+        System.out.println("...::::Datos guardados correctamente::::....");
+    }
+
+    public void readDatosSistema() throws SVPException {
+        Object datos = persistencia.IOSVP.getInstancia().readControladores();
+
+        if (datos == null) {
+            throw new SVPException("***No se encontraron datos guardados***");
         }
-        return Optional.empty();
+        Object[] controladores = (Object[]) datos;
+        SistemaVentaPasajes.setInstancia((SistemaVentaPasajes) controladores[0]);
+        ControladorEmpresas.setInstancia((ControladorEmpresas) controladores[1]);
+
+        System.out.println("...::::Datos cargados correctamente::::....");
+        System.out.println("Empresas recuperadas: " + ControladorEmpresas.getInstancia().listEmpresas().length);
     }
 }

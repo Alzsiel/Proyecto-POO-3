@@ -1,5 +1,3 @@
-//Juan Jose Henriquez Vergara
-
 package modelo;
 
 import java.util.ArrayList;
@@ -12,9 +10,12 @@ public class Bus implements Serializable{
     private int nroAsientos;
     private ArrayList<Viaje> viajes;
 
-    public Bus(String patente, int nroAsientos) {
+    private Empresa emp;
+
+    public Bus(String patente, int nroAsientos, Empresa emp) {
         this.patente = patente;
         this.nroAsientos = nroAsientos;
+        this.emp = emp;
         this.viajes = new ArrayList<Viaje>();
     }
 
@@ -40,6 +41,10 @@ public class Bus implements Serializable{
 
     public int getNroAsientos() {
         return nroAsientos;
+    }
+
+    public Empresa getEmpresa() {
+        return emp;
     }
 
     public void addViaje(Viaje viaje) {

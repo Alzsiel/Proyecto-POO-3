@@ -99,16 +99,17 @@ public class Viaje implements Serializable{
     }
 
     public String[][] getListaPasajeros() {
-        String[][] lista = new String[pasajes.size()][4];
-        for (int i = 0; i < pasajes.size(); i++) {
-            Pasaje p = pasajes.get(i);
-            Pasajero pas = p.getPasajero();
-            lista[i][0] = pas.getIdPersona().toString();
-            lista[i][1] = pas.getNombreCompleto().toString();
-            lista[i][2] = pas.getNomContacto().toString();
-            lista[i][3] = pas.getFonoContacto();
-        }
-        return lista;
+        return pasajes.stream()
+                .map(p -> {
+                    Pasajero pas = p.getPasajero();
+                    return new String[]{
+                            pas.getIdPersona().toString(),
+                            pas.getNombreCompleto().toString(),
+                            pas.getNomContacto().toString(),
+                            pas.getFonoContacto()
+                    };
+                })
+                .toArray(String[][]::new);
     }
 
     public boolean existeDisponibilidad(int nroAsientos) {
@@ -120,14 +121,10 @@ public class Viaje implements Serializable{
     }
 
     public Venta[] getVentas() {
-        ArrayList<Venta> ventas = new ArrayList<>();
-        for (Pasaje pasaje : pasajes) {
-            Venta venta = pasaje.getVenta();
-            if (!ventas.contains(venta)) {
-                ventas.add(venta);
-            }
-        }
-        return ventas.toArray(new Venta[0]);
+        return pasajes.stream()
+                .map(Pasaje::getVenta)
+                .distinct()
+                .toArray(Venta[]::new);
     }
 
     public void addConductor(Conductor conductor) {

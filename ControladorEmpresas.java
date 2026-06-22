@@ -54,6 +54,12 @@ public class ControladorEmpresas implements Serializable {
         return instancia;
     }
 
+    public static void setInstancia(
+            ControladorEmpresas nuevaInstancia) {
+
+        instancia = nuevaInstancia;
+    }
+
     public void createEmpresa(Rut rut, String nombre, String url) {
         if (findEmpresa(rut).isPresent()) {
             throw new SVPException("Ya existe empresa con el rut indicado");
@@ -73,7 +79,7 @@ public class ControladorEmpresas implements Serializable {
             throw new SVPException("Ya existe bus con la patente indicada");
         }
 
-        Bus bus = new Bus(patente, nroAsientos);
+        Bus bus = new Bus(patente, nroAsientos, emp.get());
         bus.setMarca(marca);
         bus.setModelo(modelo);
         emp.get().addBus(bus);
@@ -112,6 +118,7 @@ public class ControladorEmpresas implements Serializable {
     }
 
     public String[][] listEmpresas() {
+        System.out.println("DEBUG -> empresas.size() = " + empresas.size());
         String[][] datos = new String[empresas.size()][6];
         for (int i = 0; i < empresas.size(); i++) {
             Empresa emp = empresas.get(i);
@@ -163,80 +170,52 @@ public class ControladorEmpresas implements Serializable {
     }
 
     protected Optional<Empresa> findEmpresa(Rut rut) {
-        for (Empresa emp : empresas) {
-            if (emp.getRut().equals(rut)) {
-                return Optional.of(emp);
-            }
-        }
-        return Optional.empty();
+        return empresas.stream().filter(emp-> emp.getRut().equals(rut))
+                .findFirst();
+
     }
 
     protected Optional<Terminal> findTerminal(String nombre) {
-        for (Terminal terminal : terminales) {
-            if (terminal.getNombre().equalsIgnoreCase(nombre)) {
-                return Optional.of(terminal);
-            }
-        }
-        return Optional.empty();
+        return terminales.stream()
+                .filter(t -> t.getNombre().equalsIgnoreCase(nombre))
+                .findFirst();
     }
 
     protected Optional<Terminal> findTerminalPorComuna(String comuna) {
-        for (Terminal terminal : terminales) {
-            if (terminal.getDireccion().getComuna().equalsIgnoreCase(comuna)) {
-                return Optional.of(terminal);
-            }
-        }
-        return Optional.empty();
+        return terminales.stream()
+                .filter(t -> t.getDireccion().getComuna().equalsIgnoreCase(comuna))
+                .findFirst();
     }
 
     protected Optional<Bus> findBus(String patente) {
-        for (Bus bus : buses) {
-            if (bus.getPatente().equalsIgnoreCase(patente)) {
-                return Optional.of(bus);
-            }
-        }
-        return Optional.empty();
+        return buses.stream()
+                .filter(b -> b.getPatente().equalsIgnoreCase(patente))
+                .findFirst();
     }
 
     protected Optional<Tripulante> findTripulante(Rut rutEmp, IdPersona id) {
-        Optional<Empresa> emp = findEmpresa(rutEmp);
-        if (emp.isEmpty()) {
-            return Optional.empty();
-        }
-        Tripulante tripulante = emp.get().findTripulante(id);
-        if (tripulante == null) {
-            return Optional.empty();
-        }
-        return Optional.of(tripulante);
+        return findEmpresa(rutEmp)
+                .map(emp -> emp.findTripulante(id))
+                .map(Optional::ofNullable)
+                .orElse(Optional.empty());
     }
 
     protected Optional<Empresa> findEmpresaDeBus(String patente) {
-        for (Empresa emp : empresas) {
-            for (Bus bus : emp.getBuses()) {
-                if (bus.getPatente().equalsIgnoreCase(patente)) {
-                    return Optional.of(emp);
-                }
-            }
-        }
-        return Optional.empty();
+        return empresas.stream()
+                .filter(emp -> java.util.Arrays.stream(emp.getBuses())
+                        .anyMatch(bus -> bus.getPatente().equalsIgnoreCase(patente)))
+                .findFirst();
     }
 
     protected ArrayList<Viaje> getViajes() {
-        ArrayList<Viaje> viajes = new ArrayList<Viaje>();
-        for (Bus bus : buses) {
-            for (Viaje viaje : bus.getViajes()) {
-                viajes.add(viaje);
-            }
-        }
-        return viajes;
+        return buses.stream()
+                .flatMap(bus -> java.util.Arrays.stream(bus.getViajes()))
+                .collect(java.util.stream.Collectors.toCollection(ArrayList::new));
     }
 
     private String[] filaTerminal(String tipo, Viaje viaje, String hora) {
         Optional<Empresa> emp = findEmpresaDeBus(viaje.getBus().getPatente());
-        String nombreEmpresa = "";
-        if (emp.isPresent()) {
-            nombreEmpresa = emp.get().getNombre();
-        }
+        String nombreEmpresa = emp.map(Empresa::getNombre).orElse("");
         return new String[]{
                 tipo,
                 hora,
