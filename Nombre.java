@@ -48,8 +48,10 @@ public class Nombre implements Serializable {
 
     @Override
     public String toString() {
-        return "Tratamiento" + tratamiento + "Nombres:" + nombres + "Apellido Paterno: " + apellidoPaterno
-                + "Apellido Materno: " + apellidoMaterno;
+        return tratamiento + " " +
+                nombres + " " +
+                apellidoPaterno + " " +
+                apellidoMaterno;
     }
 
     @Override
