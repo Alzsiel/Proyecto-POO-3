@@ -1,7 +1,7 @@
 //Tomás Meza
 
 package modelo;
-
+import excepciones.SVPException;
 import java.io.Serializable;
 import java.time.LocalDate;
 import java.util.ArrayList;
@@ -106,5 +106,45 @@ public class Venta implements Serializable {
             return null;
         }
         return pago.getClass().getSimpleName();
+    }
+
+    public void generarPasajeElectronico() {
+        String nombreArchivo = this.idDocumento + this.tipo.toString().toLowerCase() + ".txt";
+        try (java.io.BufferedWriter writer = new java.io.BufferedWriter(new java.io.FileWriter(nombreArchivo))) {
+            for (Pasaje p : this.getPasajes()) {
+                Viaje viaje = p.getViaje();
+                Pasajero pasajero = p.getPasajero();
+                Empresa empresa = viaje.getBus().getEmpresa();
+                String tratamiento = pasajero.getNombreCompleto().getTratamiento().toString();
+
+                writer.write("---------------------- PASAJE ELECTRÓNICO ----------------------");
+                writer.newLine();
+                writer.write(String.format("%-20s %-20s", "Nombre Empresa", "Número de pasaje"));
+                writer.newLine();
+                writer.write(String.format("%-20s %-20d", empresa.getNombre().toUpperCase(), p.getNumero()));
+                writer.newLine();
+                writer.write(String.format("%-30s %-20s", "Nombre Pasajero", "RUT/Pasaporte"));
+                writer.newLine();
+                writer.write(String.format("%-30s %-20s", (tratamiento + ". " + pasajero.getNombreCompleto().toString()).toUpperCase(), pasajero.getIdPersona().toString()));
+                writer.newLine();
+                writer.write(String.format("%-15s %-10s %-15s", "Patente bus", "Asiento", "Valor Pagado"));
+                writer.newLine();
+                writer.write(String.format("%-15s %-10d %-15d", viaje.getBus().getPatente().toUpperCase(), p.getAsiento(), viaje.getPrecio()));
+                writer.newLine();
+                writer.write(String.format("%-20s %-20s %-15s %-10s", "Terminal origen", "Terminal destino", "Fecha", "Hora"));
+                writer.newLine();
+                writer.write(String.format("%-20s %-20s %-15s %-10s",
+                        viaje.getTerminalSalida().getNombre().toUpperCase(),
+                        viaje.getTerminalLlegada().getNombre().toUpperCase(),
+                        viaje.getFecha().toString(),
+                        viaje.getHora().toString()));
+                writer.newLine();
+                writer.write("----------------------------------------------------------------");
+                writer.newLine();
+                writer.newLine();
+            }
+        } catch (java.io.IOException e) {
+            throw new SVPException("Error al generar el archivo de pasajes: " + e.getMessage());
+        }
     }
 }

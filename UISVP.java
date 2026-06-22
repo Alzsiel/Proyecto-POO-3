@@ -1,12 +1,11 @@
 //Tomás Meza
 
 package vista;
-
 import controlador.*;
 import excepciones.SVPException;
 import modelo.*;
 import utilidades.*;
-
+import persistencia.IOSVP;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
@@ -20,6 +19,7 @@ public class UISVP {
     private ControladorEmpresas controladorEmpresas;
     private DateTimeFormatter formatoFecha;
     private DateTimeFormatter formatoHora;
+    private IOSVP ioSVP;
 
     private UISVP() {
         sc = new Scanner(System.in);
@@ -27,6 +27,7 @@ public class UISVP {
         controladorEmpresas = ControladorEmpresas.getInstancia();
         formatoFecha = DateTimeFormatter.ofPattern("dd/MM/yyyy");
         formatoHora = DateTimeFormatter.ofPattern("HH:mm");
+        ioSVP = IOSVP.getInstancia();
     }
 
     public static UISVP getInstancia() {
@@ -50,42 +51,89 @@ public class UISVP {
             System.out.println("5) Crear bus");
             System.out.println("6) Crear viaje");
             System.out.println("7) Vender pasajes");
-            System.out.println("8) Pagar venta pasajes");
-            System.out.println("9) Listar ventas");
+            System.out.println("8) Listar ventas");
+            System.out.println("9) Pagar venta pasajes");
             System.out.println("10) Listar viajes");
             System.out.println("11) Listar pasajeros de viaje");
             System.out.println("12) Listar empresas");
             System.out.println("13) Listar llegadas/salidas terminal");
             System.out.println("14) Listar ventas empresa");
-            System.out.println("15) Salir");
+            System.out.println("15) Generar pasajes venta");
+            System.out.println("16) Leer datos iniciales");
+            System.out.println("17) Guardar datos del sistema");
+            System.out.println("18) Leer datos del sistema");
+            System.out.println("19) Salir");
             System.out.print("Ingrese opcion: ");
 
             opcion = leerEntero();
             try {
                 switch (opcion) {
-                    case 1: createEmpresa(); break;
-                    case 2: contrataTripulante(); break;
-                    case 3: createTerminal(); break;
-                    case 4: createCliente(); break;
-                    case 5: createBus(); break;
-                    case 6: createViaje(); break;
-                    case 7: vendePasajes(); break;
-                    case 8: pagaVentaPasajes(); break;
-                    case 9: listVentas(); break;
-                    case 10: listViajes(); break;
-                    case 11: listPasajerosViaje(); break;
-                    case 12: listEmpresas(); break;
-                    case 13: listLlegadasSalidasTerminal(); break;
-                    case 14: listVentasEmpresa(); break;
-                    case 15: System.out.println("Saliendo..."); break;
-                    default: System.out.println("ERROR! La opcion ingresada no es valida");
+                    case 1:
+                        createEmpresa();
+                        break;
+                    case 2:
+                        contrataTripulante();
+                        break;
+                    case 3:
+                        createTerminal();
+                        break;
+                    case 4:
+                        createCliente();
+                        break;
+                    case 5:
+                        createBus();
+                        break;
+                    case 6:
+                        createViaje();
+                        break;
+                    case 7:
+                        vendePasajes();
+                        break;
+                    case 8:
+                        listVentas();
+                        break;
+                    case 9:
+                        pagaVentaPasajes();
+                        break;
+                    case 10:
+                        listViajes();
+                        break;
+                    case 11:
+                        listPasajerosViaje();
+                        break;
+                    case 12:
+                        listEmpresas();
+                        break;
+                    case 13:
+                        listLlegadasSalidasTerminal();
+                        break;
+                    case 14:
+                        listVentasEmpresa();
+                        break;
+                    case 15:
+                        generatePasajesVenta();
+                        break;
+                    case 16:
+                        readDatosIniciales();
+                        break;
+                    case 17:
+                        saveDatosSistema();
+                        break;
+                    case 18:
+                        readDatosSistema();
+                        break;
+                    case 19:
+                        System.out.println("Saliendo...");
+                        break;
+                    default:
+                        System.out.println("ERROR! La opcion ingresada no es valida");
                 }
             } catch (SVPException e) {
-                System.out.println("*** " + e.getMessage() + " ***");
+                System.out.println("* " + e.getMessage() + " *");
             } catch (Exception e) {
-                System.out.println("*** Dato ingresado no valido ***");
+                System.out.println("* Dato ingresado no valido *");
             }
-        } while (opcion != 15);
+        } while (opcion != 19);
     }
 
     private void createEmpresa() {
@@ -170,7 +218,7 @@ public class UISVP {
         System.out.print("Numero conductores [1 o 2]: ");
         int nroConductores = leerEntero();
         if (nroConductores < 1 || nroConductores > 2) {
-            System.out.println("*** Numero de conductores no valido ***");
+            System.out.println("* Numero de conductores no valido *");
             return;
         }
 
@@ -377,7 +425,7 @@ public class UISVP {
 
     private void imprimirMatriz(String[][] datos, String[] titulos) {
         if (datos.length == 0) {
-            System.out.println("*** No hay datos para mostrar ***");
+            System.out.println("* No hay datos para mostrar *");
             return;
         }
         for (String titulo : titulos) {
@@ -400,5 +448,62 @@ public class UISVP {
             }
         }
         System.out.println();
+    }
+
+    private void generatePasajesVenta() {
+
+        System.out.println(" ");
+        System.out.println("...::::Generando pasajes venta::::....");
+
+        System.out.print("ID Documento : ");
+        String idDoc = sc.nextLine();
+
+        System.out.print("Tipo de documento : ");
+        System.out.print("Boleta[1] o Factura[2] : ");
+        int op = Integer.parseInt(sc.nextLine());
+        TipoDocumento tipo;
+        if (op == 1) {
+            tipo = TipoDocumento.BOLETA;
+        } else {
+            tipo = TipoDocumento.FACTURA;
+        }
+        sistema.generatePasajesVenta(idDoc, tipo);
+        System.out.println("...::::Pasajes generados correctamente::::....");
+    }
+
+    private void readDatosIniciales() {
+
+        System.out.println(" ");
+        System.out.println("...::::Leer datos iniciales::::....");
+        try {
+            sistema.readDatosIniciales();
+            System.out.println("...::::Datos iniciales cargados con exito::::....");
+        } catch (SVPException e) {
+            System.out.println("No existe o no se puede abrir el archivo SVPDatosIniciales.txt");
+        }
+    }
+
+    private void saveDatosSistema() {
+
+        System.out.println(" ");
+        System.out.println("...::::Guardar datos del sistema::::....");
+        try {
+            sistema.saveDatosSistema();
+            System.out.println("....::::Datos guardados correctamente::::....");
+        } catch (SVPException e) {
+            System.out.println("No se puede abrir o crear el archivo SVPObjetos.obj");
+        }
+    }
+
+    private void readDatosSistema() {
+
+        System.out.println(" ");
+        System.out.println("...::::Recuperando datos del sistema::::....");
+        try {
+            sistema.readDatosSistema();
+            System.out.println("...::::Datos recuperados correctamente::::....");
+        } catch (SVPException e) {
+            System.out.println("No existe o no se puede abrir el archivo SVPObjetos.obj");
+        }
     }
 }

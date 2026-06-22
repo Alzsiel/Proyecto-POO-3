@@ -76,25 +76,17 @@ public class Empresa implements Serializable {
     }
 
     public Venta[] getVentas() {
-        ArrayList<Venta> ventas = new ArrayList<>();
-        for (Bus bus : listaBuses) {
-            for (Viaje viaje : bus.getViajes()) {
-                for (Venta venta : viaje.getVentas()) {
-                    if (!ventas.contains(venta)) {
-                        ventas.add(venta);
-                    }
-                }
-            }
-        }
-        return ventas.toArray(new Venta[0]);
+        return listaBuses.stream()
+                .flatMap(bus -> java.util.Arrays.stream(bus.getViajes()))
+                .flatMap(viaje -> java.util.Arrays.stream(viaje.getVentas()))
+                .distinct()
+                .toArray(Venta[]::new);
     }
 
     public Tripulante findTripulante(IdPersona id) {
-        for (Tripulante tripulante : listaTripulantes) {
-            if (tripulante.getIdPersona().equals(id)) {
-                return tripulante;
-            }
-        }
-        return null;
+        return listaTripulantes.stream()
+                .filter(tripulante -> tripulante.getIdPersona().equals(id))
+                .findFirst()
+                .orElse(null);
     }
 }
