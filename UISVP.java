@@ -3,7 +3,7 @@
 package vista;
 import controlador.*;
 import excepciones.SVPException;
-import modelo.*;
+import modelo.TipoDocumento;
 import utilidades.*;
 import persistencia.IOSVP;
 import java.time.LocalDate;
@@ -351,8 +351,7 @@ public class UISVP {
     }
 
     private int leerEntero() {
-        int valor = Integer.parseInt(sc.nextLine());
-        return valor;
+        return Integer.parseInt(sc.nextLine().trim());
     }
 
     private Rut leerRut(String mensaje) {
@@ -496,14 +495,15 @@ public class UISVP {
     }
 
     private void readDatosSistema() {
-
         System.out.println(" ");
         System.out.println("...::::Recuperando datos del sistema::::....");
         try {
             sistema.readDatosSistema();
+            sistema = SistemaVentaPasajes.getInstancia();
+            controladorEmpresas = ControladorEmpresas.getInstancia();
             System.out.println("...::::Datos recuperados correctamente::::....");
         } catch (SVPException e) {
-            System.out.println("No existe o no se puede abrir el archivo SVPObjetos.obj");
+            System.out.println("No existe o no se puede abrir el archivo");
         }
     }
 }
