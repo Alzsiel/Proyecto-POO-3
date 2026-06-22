@@ -428,12 +428,12 @@ public class UISVP {
             return;
         }
         for (String titulo : titulos) {
-            System.out.printf("| %-15s", titulo);
+            System.out.printf("| %-25s", titulo);
         }
         System.out.println("|");
         for (int i = 0; i < datos.length; i++) {
             for (int j = 0; j < datos[i].length; j++) {
-                System.out.printf("| %-15s", datos[i][j]);
+                System.out.printf("| %-25s", datos[i][j]);
             }
             System.out.println("|");
         }
