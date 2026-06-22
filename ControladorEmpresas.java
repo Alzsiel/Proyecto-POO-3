@@ -110,15 +110,15 @@ public class ControladorEmpresas implements Serializable {
     public void hireAuxiliarForEmpresa(Rut rutEmp, IdPersona id, Nombre nom, Direccion dir) {
         Optional<Empresa> emp = findEmpresa(rutEmp);
         if (emp.isEmpty()) {
-            throw new SVPException("No existe empresa con el rut indicado");
+            throw new SVPException("***No existe empresa con el rut indicado***");
         }
         if (!emp.get().addAuxiliar(id, nom, dir)) {
-            throw new SVPException("Ya esta contratado un tripulante con el id indicado");
+            throw new SVPException("...::::Ya esta contratado un tripulante con el id indicado::::....");
         }
     }
 
     public String[][] listEmpresas() {
-        System.out.println("DEBUG -> empresas.size() = " + empresas.size());
+        System.out.println("Nro de Empresas = " + empresas.size());
         String[][] datos = new String[empresas.size()][6];
         for (int i = 0; i < empresas.size(); i++) {
             Empresa emp = empresas.get(i);
@@ -135,7 +135,7 @@ public class ControladorEmpresas implements Serializable {
     public String[][] listLlegadasSalidasTerminal(String nombre, LocalDate fecha) {
         Optional<Terminal> terminal = findTerminal(nombre);
         if (terminal.isEmpty()) {
-            throw new SVPException("No existe terminal con el nombre indicado");
+            throw new SVPException("***No existe terminal con el nombre indicado***");
         }
 
         ArrayList<String[]> filas = new ArrayList<String[]>();
@@ -155,7 +155,7 @@ public class ControladorEmpresas implements Serializable {
     public String[][] listVentasEmpresa(Rut rut) {
         Optional<Empresa> emp = findEmpresa(rut);
         if (emp.isEmpty()) {
-            throw new SVPException("No existe empresa con el rut indicado");
+            throw new SVPException("***No existe empresa con el rut indicado***");
         }
 
         Venta[] ventas = emp.get().getVentas();
