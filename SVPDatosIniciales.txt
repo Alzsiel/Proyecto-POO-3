@@ -1,0 +1,16 @@
+CP;11111111-1;SR;Jose;Esteban;Cid;Aedo;+56911223344;jose@correo.cl;SRA;Lidia;Andrea;Solis;Robles;+56997774432
+C;22222222-2;SRA;Ana;Eugenia;Munoz;Naranjo;+56961732323;ana@correo.cl
+P;55555555-5;SR;Luigi Mario;Mario;Mario;+56998726472;SR;Karen Ana;Leon;Pino;+56947344111
++
+88888888-8;TOMAS MEZA;https://www.tomasmeza.cl
++
+A;66666666-6;SR;Juan;Esteban;Lagos;Rios;San Carlos;201;Aurora;88888888-8
+C;77777777-7;SR;Pedro;Alberto;Perez;Gomez;Los Robles;123;Juan;88888888-8
++
+AURORA;Los Alamos;450;Aurora
+JUAN;Los Pinos;100;Juan
++
+CIS;Marcopolo;Paradiso;38;88888888-8
+EFGH34;Mercedes;Sprinter;20;88888888-8
++
+29-09-2006;10:10;5000;90;CIS;66666666-6;77777777-7;AURORA;JUAN
