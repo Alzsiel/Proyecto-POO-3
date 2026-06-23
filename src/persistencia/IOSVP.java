@@ -1,5 +1,4 @@
 //Marisol Yañez Borquez
-
 package persistencia;
 
 import java.time.format.DateTimeFormatter;
@@ -125,11 +124,11 @@ public class IOSVP implements Serializable{
         Rut.of(datos[4].replace(".", ""));
 
         ControladorEmpresas.getInstancia().createBus(
-                        datos[0],
-                        datos[1],
-                        datos[2],
-                        Integer.parseInt(datos[3]),
-                        Rut.of(datos[4].replace(".","")));
+                datos[0],
+                datos[1],
+                datos[2],
+                Integer.parseInt(datos[3]),
+                Rut.of(datos[4].replace(".","")));
     }
 
     private void parseViaje(String linea) {
@@ -161,13 +160,13 @@ public class IOSVP implements Serializable{
                 };
 
         SistemaVentaPasajes.getInstancia().createViaje(
-                        fecha,
-                        hora,
-                        precio,
-                        duracion,
-                        patente,
-                        tripulantes,
-                        comunas);
+                fecha,
+                hora,
+                precio,
+                duracion,
+                patente,
+                tripulantes,
+                comunas);
     }
 
     private void parseClientePasajero(String linea) {
