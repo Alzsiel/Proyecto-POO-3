@@ -1,3 +1,5 @@
+//Juan Jose Henriquez Vergara
+
 package modelo;
 
 import java.util.ArrayList;
