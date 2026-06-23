@@ -1,6 +1,10 @@
 //Tomás Meza
 
 package vista;
+
+import java.io.BufferedReader;
+import java.io.FileReader;
+import java.io.IOException;
 import controlador.*;
 import excepciones.SVPException;
 import modelo.TipoDocumento;
@@ -51,8 +55,8 @@ public class UISVP {
             System.out.println("5) Crear bus");
             System.out.println("6) Crear viaje");
             System.out.println("7) Vender pasajes");
-            System.out.println("8) Listar ventas");
-            System.out.println("9) Pagar venta pasajes");
+            System.out.println("8) Pagar venta pasajes");
+            System.out.println("9) Listar ventas");
             System.out.println("10) Listar viajes");
             System.out.println("11) Listar pasajeros de viaje");
             System.out.println("12) Listar empresas");
@@ -90,10 +94,10 @@ public class UISVP {
                         vendePasajes();
                         break;
                     case 8:
-                        listVentas();
+                        pagaVentaPasajes();
                         break;
                     case 9:
-                        pagaVentaPasajes();
+                        listVentas();
                         break;
                     case 10:
                         listViajes();
@@ -131,7 +135,8 @@ public class UISVP {
             } catch (SVPException e) {
                 System.out.println("* " + e.getMessage() + " *");
             } catch (Exception e) {
-                System.out.println("* Dato ingresado no valido *");
+                System.out.println("ERROR REAL:");
+                e.printStackTrace();
             }
         } while (opcion != 19);
     }
@@ -277,12 +282,12 @@ public class UISVP {
                 if (!e.getMessage().contains("pasajero")) {
                     throw e;
                 }
-                System.out.println("Pasajero no existe, se ingresaran sus datos");
+                System.out.println("**Pasajero no existe, se ingresaran sus datos**");
                 Nombre nombrePas = leerNombre("pasajero");
-                System.out.print("Telefono pasajero: ");
+                System.out.print("Telefono pasajero : ");
                 String fonoPas = sc.nextLine();
                 Nombre contacto = leerNombre("contacto");
-                System.out.print("Telefono contacto: ");
+                System.out.print("Telefono contacto : ");
                 String fonoContacto = sc.nextLine();
                 sistema.createPasajero(idPasajero, nombrePas, fonoPas, contacto, fonoContacto);
                 sistema.vendePasaje(idDoc, tipo, fechaViaje, hora, patente, asiento, idPasajero);
@@ -290,16 +295,16 @@ public class UISVP {
         }
 
         pagaVenta(idDoc, tipo);
-        System.out.println("Venta realizada exitosamente");
+        System.out.println("...::::Venta realizada exitosamente::::....");
     }
 
     private void pagaVentaPasajes() {
-        System.out.println("...:::: Pagar venta ::::...");
+        System.out.println("...::::Pagar venta::::...");
         System.out.print("ID documento: ");
         String idDoc = sc.nextLine();
         TipoDocumento tipo = leerTipoDocumento();
         pagaVenta(idDoc, tipo);
-        System.out.println("Pago realizado exitosamente");
+        System.out.println("...::::Pago realizado exitosamente::::....");
     }
 
     private void pagaVenta(String idDoc, TipoDocumento tipo) {
@@ -424,7 +429,7 @@ public class UISVP {
 
     private void imprimirMatriz(String[][] datos, String[] titulos) {
         if (datos.length == 0) {
-            System.out.println("* No hay datos para mostrar *");
+            System.out.println("**No hay datos para mostrar**");
             return;
         }
         for (String titulo : titulos) {
@@ -457,17 +462,34 @@ public class UISVP {
         System.out.print("ID Documento : ");
         String idDoc = sc.nextLine();
 
-        System.out.print("Tipo de documento : ");
         System.out.print("Boleta[1] o Factura[2] : ");
         int op = Integer.parseInt(sc.nextLine());
+
         TipoDocumento tipo;
+
         if (op == 1) {
             tipo = TipoDocumento.BOLETA;
         } else {
             tipo = TipoDocumento.FACTURA;
         }
+
         sistema.generatePasajesVenta(idDoc, tipo);
-        System.out.println("...::::Pasajes generados correctamente::::....");
+
+        String nombreArchivo = idDoc + tipo.toString().toLowerCase() + ".txt";
+
+        try (BufferedReader br = new BufferedReader(new FileReader(nombreArchivo))) {
+
+            String linea;
+
+            System.out.println();
+
+            while ((linea = br.readLine()) != null) {
+                System.out.println(linea);
+            }
+
+        } catch (IOException e) {
+            System.out.println("Error al leer archivo");
+        }
     }
 
     private void readDatosIniciales() {

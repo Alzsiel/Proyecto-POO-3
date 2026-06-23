@@ -144,7 +144,7 @@ public class Venta implements Serializable {
                 writer.newLine();
             }
         } catch (java.io.IOException e) {
-            throw new SVPException("Error al generar el archivo de pasajes: " + e.getMessage());
+            throw new SVPException("***Error al generar el archivo de pasajes*** : " + e.getMessage());
         }
     }
 }
