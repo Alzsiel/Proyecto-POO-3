@@ -1,3 +1,4 @@
+//Marisol Yañez Borquez
 package vista;
 
 import javax.swing.*;
