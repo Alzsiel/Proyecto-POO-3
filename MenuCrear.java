@@ -2,8 +2,6 @@
 
 package vista;
 
-import utilidades.Rut;
-
 import javax.swing.*;
 import java.awt.event.*;
 
@@ -625,9 +623,9 @@ public class MenuCrear extends JDialog {
                 JTextField txtCorreoUsuario = new JTextField(10);
                 JTextField txtCorreoDominio = new JTextField(10);
 
-                javax.swing.JPanel panelCorreoVisual = new javax.swing.JPanel(new java.awt.FlowLayout(java.awt.FlowLayout.LEFT, 2, 0));
+                JPanel panelCorreoVisual = new JPanel(new java.awt.FlowLayout(java.awt.FlowLayout.LEFT, 2, 0));
                 panelCorreoVisual.add(txtCorreoUsuario);
-                panelCorreoVisual.add(new javax.swing.JLabel("@"));
+                panelCorreoVisual.add(new JLabel("@"));
                 panelCorreoVisual.add(txtCorreoDominio);
 
                 Object[] panelCorreo = {
