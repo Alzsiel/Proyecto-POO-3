@@ -13,6 +13,9 @@ public class Rut implements IdPersona, Serializable {
         this.dv = dv;
     }
 
+    public Rut(String rut) {
+    }
+
     public int getNumero() {
         return numero;
     }
