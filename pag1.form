@@ -95,11 +95,11 @@
             <children>
               <component id="f63b8" class="javax.swing.JButton" binding="button1" default-binding="true">
                 <constraints>
-                  <grid row="1" column="0" row-span="3" col-span="1" vsize-policy="0" hsize-policy="3" anchor="0" fill="1" indent="0" use-parent-layout="false"/>
+                  <grid row="0" column="0" row-span="4" col-span="1" vsize-policy="0" hsize-policy="3" anchor="0" fill="1" indent="0" use-parent-layout="false"/>
                 </constraints>
                 <properties>
                   <background color="-16777190"/>
-                  <icon value="vista/old_windows_icons__1_-removebg-preview.png"/>
+                  <icon value="vista/Icons/old_windows_icons__1_-removebg-preview.png"/>
                   <text value=""/>
                 </properties>
               </component>
